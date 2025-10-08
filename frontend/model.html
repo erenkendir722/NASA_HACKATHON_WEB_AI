@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AI Model — Lunarispectra</title>
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #e6f1ff;
+  background: radial-gradient(circle at 20% 20%, #0a1730 0%, #050b1a 80%);
+  overflow-x: hidden;
+  position: relative;
+  padding-bottom: 90px;
+}
+
+/* === YILDIZLI ARKA PLAN === */
+.starfield { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  z-index: -4; 
+  overflow: hidden; 
+}
+
+.star { 
+  position: absolute; 
+  background: white; 
+  border-radius: 50%; 
+  opacity: 0.7; 
+  animation: twinkle 2s infinite ease-in-out; 
+}
+@keyframes twinkle { 
+  0%,100%{opacity:0.3;transform:scale(0.8);} 50%{opacity:1;transform:scale(1.2);} }
+
+/* === NEBULA ve GEZEGENLER === */
+.nebula {
+  position: fixed; 
+  top: -50%; 
+  left: -50%; 
+  width: 200%; 
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(0,100,255,0.05), transparent 70%),
+              radial-gradient(circle at 70% 60%, rgba(100,200,255,0.05), transparent 70%);
+  animation: nebulaMove 120s linear infinite; 
+  z-index: -3;
+}
+@keyframes nebulaMove { 0%{transform:translate(0,0);} 50%{transform:translate(40px,-40px);} 100%{transform:translate(0,0);} }
+
+.glow {
+  position: fixed; 
+  top: -150px; 
+  left: -150px; 
+  width: 500px; 
+  height: 500px;
+  background: radial-gradient(circle, rgba(90,0,255,0.3), transparent 70%);
+  filter: blur(80px); z-index: -2;
+}
+
+.saturn {
+  position: fixed; 
+  top: 120px; 
+  right: 70px; 
+  width: 120px; 
+  height: 120px;
+  border-radius: 50%; 
+  background: radial-gradient(circle at 30% 30%, #f2c27f, #b57642);
+  box-shadow: 0 0 25px #f2c27f88; 
+  animation: rotatePlanet 60s linear infinite; z-index: -1;
+}
+.saturn::before {
+  content:''; position:absolute; top:50%; left:50%; width:180px; height:20px;
+  border-radius:50%; background:rgba(255,200,100,.3);
+  transform:translate(-50%,-50%) rotateX(60deg);
+}
+
+.kepler {
+  position: fixed; 
+  top: 250px; 
+  left: 100px; 
+  width: 100px; 
+  height: 100px;
+  border-radius: 50%; 
+  background: radial-gradient(circle at 30% 30%, #7fdbff, #0077aa);
+  box-shadow: 0 0 25px #7fdbff88; 
+  animation: orbitKepler 50s linear infinite; 
+  z-index: -1;
+}
+@keyframes orbitKepler { 0%{transform:rotate(0deg) translateX(150px) rotate(0deg);} 100%{transform:rotate(360deg) translateX(150px) rotate(-360deg);} }
+
+/* === HEADER === */
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 70px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+  position:sticky;
+  top:0;z-index:10;
+  box-shadow:0 2px 12px rgba(0,0,0,0.3);
+}
+header h1 { font-size:1.6rem;color:#8fc8ff;margin:0; }
+
+nav a { color:#fff;
+  margin-left:32px;
+  text-decoration:none;
+  font-weight:500;
+  font-size:1.1rem;
+  padding:10px 18px;
+  border-radius:10px;
+  transition:.3s; }
+
+nav a:hover{
+  background:rgba(126,200,255,0.15);
+}
+
+nav a.active{
+  background:rgba(126,200,255,0.25);
+  color:#7ec8ff;}
+
+/* === TOOLTIP BİLGİ KUTULARI === */
+.info-box {
+  display:inline-block;
+  width:18px;height:18px;
+  border-radius:4px;
+  background:#fff;
+  color:#000;
+  text-align:center;
+  line-height:18px;
+  font-size:12px;
+  cursor:pointer;
+  font-weight:600;
+  position:relative;
+}
+.info-box:hover::after {
+  content: attr(data-tooltip);
+  position:absolute;top:-28px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,0.85);
+  color:#fff;
+  font-size:12px;  
+  padding:4px 6px;
+  border-radius:4px;
+  white-space:nowrap;
+  pointer-events:none;
+  z-index:10;
+}
+
+/* === MODEL === */
+main {
+    max-width: 940px;
+    margin: 70px auto;
+    padding: 32px;
+    background: rgba(255,255,255,.05);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0,60,150,.3);
+    border: 1px solid rgba(255,255,255,.08);
+  }
+
+  h1 { 
+    text-align: center;
+     font-weight: 600;
+     color: #7ec8ff;
+   }
+  .muted { 
+    text-align: center;
+     color: #a9c8ffb8;
+     font-size: .95rem;
+     margin-bottom: 24px;
+   }
+
+  label { 
+    display: block;
+     margin-top: 10px;
+     color: #d0e7ff;
+     font-weight: 500;
+   }
+  input, select { 
+    width: 100%;
+     padding: 10px 14px;
+     border-radius: 8px;
+     border: 1px solid rgba(255,255,255,.1);
+     background: rgba(255,255,255,.05);
+     color: #fff;
+     font-size: .95rem;
+     margin-top: 4px;
+     box-sizing: border-box;
+   }
+  input:focus { outline: none;
+     border-color: #3b8dff;
+     box-shadow: 0 0 6px #3b8dff88;
+   }
+  select option { 
+    background: #0a1730;
+     color: #fff;
+   }
+  select option:hover, select option:focus { background: #3b8dff;
+     color: #fff;
+   }
+
+  #predictBtn {
+    margin-top: 16px;
+     padding: 12px 20px;
+     border-radius: 10px;
+     border: none;
+
+    background: linear-gradient(90deg, #3b8dff, #6a42ff);
+
+    color: #fff;
+     font-size: 1rem;
+     cursor: pointer;
+     width: 100%;
+     transition: .2s;
+
+  }
+
+  #predictBtn:hover { 
+    transform: scale(1.02);
+     box-shadow: 0 0 12px #3b8dff88;
+   }
+  #out {
+     margin-top: 18px;
+     padding: 14px;
+     border-radius: 10px;
+     background: rgba(255,255,255,.07);
+     text-align: center;
+     font-size: 1.1rem;
+     word-break: break-word;
+   }
+  a { 
+    color: #7ec8ff;
+     text-decoration: none;
+   }
+  a:hover { 
+    text-decoration: underline;
+   }
+  footer { 
+    text-align: center;
+     margin-top: 24px;
+     font-size: .9rem;
+     color: #88aaffaa;
+   }
+
+  .row { 
+    display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     gap: 48px;
+     align-items: start;
+   }
+  .row.single { grid-template-columns: 1fr;
+   }
+
+
+/* === FOOTER === */
+footer {
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:55px;  
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(10px);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 40px;
+  font-size:0.9rem;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.3);
+
+}
+.footer-center{color:#9fc7ffcc;
+  font-size:0.85rem;
+  text-align:center;
+  flex:1;
+}
+.footer-right{display:flex;
+  align-items:center;
+  gap:8px;
+  position:relative;
+  margin-right:55px;
+}
+.info-icon{background:rgba(255,255,255,0.15);
+  border-radius:50%;
+  width:26px;
+  height:26px;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  font-weight:bold;
+}
+.info-icon:hover{
+  background:rgba(255,255,255,0.3);
+}
+.sources{display:none;
+  position:absolute;
+  bottom:50px;
+  right:20px;
+  background:rgba(255,255,255,0.1);
+  border-radius:12px;
+  padding:14px 18px;
+  width:260px;
+  color:#cfe8ff;
+  text-align:left;
+  font-size:0.85rem;
+  box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+.sources.visible{display:block;
+}
+</style>
+</head>
+
+<body>
+<!-- 🌌 Arka Plan Elemanları -->
+<div class="starfield" id="starfield"></div>
+<div class="nebula"></div>
+<div class="glow"></div>
+<div class="saturn"></div>
+<div class="kepler"></div>
+
+<!-- HEADER -->
+<header>
+  <h1>Lunarispectra</h1>
+  <nav>
+    <a href="index.html">Anasayfa</a>
+    <a href="blog.html">Görseller</a>
+    <a href="model.html" class="active">Model</a>
+    <a href="iletisim.html">İletişim</a>
+  </nav>
+</header>
+
+<!-- MODEL İÇERİK -->
+<main>
+  <h1>AI Model — Uygunluk Tahmini</h1>
+
+
+  <div class="row">
+    <div>
+      <label>Mission <span class="info-box" data-tooltip="Görev (KEPLER, K2, TESS)">i</span></label>
+      <select id="mission"><option>KEPLER</option><option>K2</option><option>TESS</option></select>
+    </div>
+    <div>
+      <label>Impact (b) <span class="info-box" data-tooltip="Geçişin yıldız merkezine uzaklığı">i</span></label>
+      <input id="impact" type="number" step="any" value="0.4"/>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Period (days) <span class="info-box" data-tooltip="Gezegenin yıldız etrafındaki dönüş süresi (gün)">i</span></label>
+      <input id="period_days" type="number" step="any" value="10"/>
+    </div>
+    <div>
+      <label>Duration (hrs) <span class="info-box" data-tooltip="Geçişin toplam süresi (saat)">i</span></label>
+      <input id="duration_hrs" type="number" step="any" value="3"/>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Depth (ppm) <span class="info-box" data-tooltip="Işık eğrisindeki parlaklık azalma miktarı">i</span></label>
+      <input id="depth_ppm" type="number" step="any" value="800"/>
+    </div>
+    <div>
+      <label>Radius (R_earth) <span class="info-box" data-tooltip="Gezegen yarıçapı (Dünya birimiyle)">i</span></label>
+      <input id="radius_rearth" type="number" step="any" value="1.2"/>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Stellar Radius (R_sun) <span class="info-box" data-tooltip="Yıldız yarıçapı (Güneş birimiyle)">i</span></label>
+      <input id="st_rad" type="number" step="any" value="1.0"/>
+    </div>
+    <div>
+      <label>Teff (K) <span class="info-box" data-tooltip="Yıldızın yüzey sıcaklığı (Kelvin)">i</span></label>
+      <input id="teff" type="number" step="any" value="5600"/>
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>log g <span class="info-box" data-tooltip="Yüzey yerçekimi (logaritmik)">i</span></label>
+      <input id="logg" type="number" step="any" value="4.4"/>
+    </div>
+  </div>
+
+  <button id="predictBtn"> Tahmin Al</button>
+  <div id="out">Henüz tahmin yok.</div>
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-center">
+    © 2025 Lunarispectra Team — All rights reserved.
+  </div>
+  <div class="footer-right">
+    <span>Kaynakça</span>
+    <div class="info-icon" id="infoBtn">?</div>
+    <div class="sources" id="sourcesBox">
+      <p>• NASA Exoplanet Archive — Open Data</p>
+      <p>• Kepler, K2 ve TESS mission verileri</p>
+      <p>• Scikit-Learn, Pandas, Matplotlib analizleri</p>
+      <p>• Görseller: Lunarispectra ML Project</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 🌠 Yıldızlar oluştur
+const starContainer = document.getElementById('starfield');
+for (let i = 0; i < 300; i++) {
+  const star = document.createElement('div');
+  star.classList.add('star');
+  const size = Math.random() * 2 + 1;
+  star.style.width = `${size}px`;
+  star.style.height = `${size}px`;
+  star.style.top = `${Math.random() * 100}%`;
+  star.style.left = `${Math.random() * 100}%`;
+  star.style.animationDuration = `${1 + Math.random() * 2}s`;
+  starContainer.appendChild(star);
+}
+
+// 📚 Kaynakça popup
+const btn = document.getElementById("infoBtn");
+const box = document.getElementById("sourcesBox");
+btn.addEventListener("click", e => {
+  e.stopPropagation();
+  box.classList.toggle("visible");
+});
+document.addEventListener("click", e => {
+  if (!box.contains(e.target) && !btn.contains(e.target)) box.classList.remove("visible");
+});
+
+// 🔭 Model API
+const API_URL = "http://127.0.0.1:5000/predict";
+const el = id => document.getElementById(id);
+document.getElementById('predictBtn').addEventListener('click', async ()=>{
+  const payload = {
+    mission: el('mission').value,
+    period_days: parseFloat(el('period_days').value),
+    duration_hrs: parseFloat(el('duration_hrs').value),
+    depth_ppm: parseFloat(el('depth_ppm').value),
+    radius_rearth: parseFloat(el('radius_rearth').value),
+    st_rad: parseFloat(el('st_rad').value),
+    impact: parseFloat(el('impact').value),
+    teff: parseFloat(el('teff').value),
+    logg: parseFloat(el('logg').value)
+  };
+  if(Object.values(payload).some(v=>v===''||v===null||Number.isNaN(v))){
+    alert('Tüm alanları doldur.');
+    return;
+  }
+  el('out').innerHTML='⏳ Gönderiliyor...';
+  try{
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`HTTP ${res.status} - ${text}`);
+  }
+
+  const data = await res.json();
+
+  // Mapping
+  const labels = {
+    0: "Candidate",
+    1: "Confirmed",
+    2: "False Positive"
+  };
+
+  const conf = (data?.confidence != null)
+    ? ` (Güven: ${(Number(data.confidence) * 100).toFixed(2)}%)`
+    : '';
+
+  const thr = (data?.p_confirmed != null && data?.is_confirmed_by_thr != null)
+    ? `<br/>p(CONFIRMED): ${(Number(data.p_confirmed) * 100).toFixed(2)}% — Eşik kararı: ${data.is_confirmed_by_thr ? '✅' : '❌'}`
+    : '';
+
+  const predLabel = (labels[data?.prediction] ?? String(data?.prediction ?? '—'));
+
+  el('out').innerHTML = `<strong>${predLabel}</strong>${conf}${thr}`;
+}catch(e){
+  console.error(e);
+  el('out').innerHTML = `<span style="color:#ff7373">🚨 Sunucuya ulaşılamadı veya hata döndü.${e?.message ? ' (' + e.message + ')' : ''}</span>`;
+}
+
+});
+
+// Dizi: sırasıyla impact, period_days, duration_hrs, depth_ppm, radius_rearth, st_rad, teff, logg
+const defaults = [5.746007,3.218,1239.0781822,2.025,0.537,3348.0,4.926,0.3073];
+
+// Input id’lerini sırayla eşleştiriyoruz
+const ids = ["period_days", "duration_hrs", "depth_ppm", "radius_rearth","impact", "teff", "logg", "st_rad"];
+
+// Sayfa yüklenince değerleri ata
+window.addEventListener("DOMContentLoaded", () => {
+  ids.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) el.value = defaults[i];
+  });
+  
+  // Mission da sabit olabilir
+  document.getElementById("mission").value = "KEPLER";
+});
+
+</script>
+</body>
+</html>

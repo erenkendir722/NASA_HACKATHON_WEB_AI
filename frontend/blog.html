@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lunarispectra — Blog & Görseller</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at 20% 20%, #050b15 0%, #000010 100%);
+    color: #fff;
+    overflow-x: hidden;
+    line-height: 1.6;
+    padding-bottom: 120px;
+  }
+
+  article p {
+    color: #cfe8ff;
+    font-size: 1.15rem; /* önceden 1rem idi */
+    line-height: 1.7;
+  }
+
+  /* 🌟 YILDIZLI ARKA PLAN */
+  .starfield {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -4;
+  }
+
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 2s infinite ease-in-out;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* 🌍 DÜNYA */
+
+
+  @keyframes spin {
+    0% { transform: translateX(-50%) rotate(0deg); }
+    100% { transform: translateX(-50%) rotate(360deg); }
+  }
+
+  /* === HEADER === */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 70px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+    color: #8fc8ff;
+    margin: 0;
+  }
+
+  nav a {
+    color: #fff;
+    margin-left: 32px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.1rem;
+    padding: 10px 18px;
+    border-radius: 10px;
+    transition: all 0.3s;
+  }
+
+  nav a:hover {
+    background: rgba(126,200,255,0.15);
+  }
+
+  nav a.active {
+    background: rgba(126,200,255,0.25);
+    color: #7ec8ff;
+    box-shadow: 0 0 10px rgba(126,200,255,0.3);
+  }
+
+  /* === FOOTER === */
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    font-size: 0.9rem;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    z-index: 20;
+  }
+
+  .footer-center {
+    color: #9fc7ffcc;
+    font-size: 0.85rem;
+    text-align: center;
+    flex: 1;
+  }
+
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    margin-right: 55px;
+  }
+
+  .info-icon {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none;
+    transition: background 0.2s;
+  }
+
+  .info-icon:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .sources {
+    display: none;
+    position: absolute;
+    bottom: 65px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 16px 20px;
+    width: 280px;
+    color: #cfe8ff;
+    text-align: left;
+    font-size: 0.9rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    z-index: 25;
+  }
+
+  .sources.visible {
+    display: block;
+  }
+
+  /* === ANA İÇERİK === */
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+    z-index: 5;
+  }
+
+  article {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 30px;
+    transition: 0.3s;
+  }
+
+  article:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 18px rgba(59, 141, 255, 0.25);
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  figure img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  article h2 {
+    font-size: 1.6rem;
+    margin: 15px 0 8px;
+  }
+
+  /* Bu ikinci blok altta yine article p'yi 1rem yapıyor; istersen kaldırabilirsin. */
+  article p {
+    color: #cfe8ff;
+    font-size: 1rem;
+  }
+
+  .back {
+    display: block;
+    width: fit-content;
+    margin: 40px auto;
+    color: #fff;
+    text-decoration: none;
+    background: #2e7bef;
+    padding: 12px 24px;
+    border-radius: 10px;
+    transition: 0.3s;
+    font-weight: 500;
+  }
+
+  .back:hover {
+    background: #5294ff;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+
+<body>
+  <!-- ARKA PLAN -->
+  <div class="starfield" id="starfield"></div>
+  <!-- Kayan yıldız kaldırıldı -->
+  <div class="earth"></div>
+
+  <!-- HEADER -->
+  <header>
+    <h1>Lunarispectra</h1>
+    <nav>
+      <a href="index.html">Anasayfa</a>
+      <a href="blog.html" class="active">Görseller</a>
+      <a href="model.html">Model</a>
+      <a href="iletisim.html">İletişim</a>
+    </nav>
+  </header>
+
+  <!-- ANA İÇERİK -->
+  <main>
+
+    <article>
+      <h2>Lunarispectra Tespiti için Gelişmiş Makine Öğrenmesi Eğitimi</h2>
+      <p>Bu Python betiği (train_exoplanets_v3.py), NASA’nın Kepler, K2 ve TESS görevlerinden elde 
+        edilen verileri kullanarak ötegezegenleri otomatik şekilde sınıflandırmak için geliştirilmiş 
+        bir makine öğrenmesi modelini eğitir. Kod, verileri yükledikten sonra logg &lt; 3.8 olan düşük 
+        yerçekimli dev yıldızları filtreleyerek daha tutarlı bir ana dizi örneklemi oluşturur. Ardından, 
+        aykırı değerleri belirlenen sınırlar içinde kırparak veri dağılımını dengeler. Özellik mühendisliği 
+        aşamasında, yıldız yarıçapına göre normalize edilmiş derinlik (depth_norm), süreye göre oranlanmış 
+        derinlik (depth_norm_per_hour), logaritmik dönüşümler ve çeşitli oran özellikleri eklenir. Model eğitimi 
+        aşamasında LightGBM tercih edilir; eğer uygun değilse XGBoost veya RandomForest alternatifleri devreye girer. 
+        Eğitim süreci, medyanla doldurma ve one-hot encoding işlemlerinden geçen veriler üzerinde gerçekleştirilir. 
+        Early stopping stratejisiyle aşırı öğrenme önlenir. Daha sonra model, CalibratedClassifierCV ile kalibre 
+        edilerek olasılık tahminlerinin güvenilirliği artırılır. “CONFIRMED” sınıfı için optimum karar eşiği, 
+        precision-recall eğrisi üzerinden F1 skorunu maksimize edecek şekilde ayarlanır. Eğitim sonrası doğruluk, 
+        macro-F1, sınıflandırma raporu ve karmaşıklık matrisi hesaplanır. Son olarak model, label encoder, önemli 
+        özellikler ve konfigürasyon dosyaları artifacts_v3 klasörüne kaydedilir. Kod genel olarak veri temizleme, 
+        özellik üretimi, modelleme, kalibrasyon ve değerlendirme süreçlerini tek bir pipeline içinde birleştirir.
+      </p>
+    </article>
+    
+    <article>
+      <figure><img src="output.png" alt="Galaksi Görseli"></figure>
+      <h2>Galaksilerin Dansı</h2>
+      <p>Bu görsel, farklı ötegezegenler üzerinde yapılan ölçümlere dair bir pair plot'tur...</p>
+    </article>
+
+    <article>
+      <figure><img src="histogram.png" alt="Histogram Grafiği"></figure>
+      <h2>Yıldız Parlaklığı Histogramı</h2>
+      <p>Bu görsel, ötegezegenleri tahmin etmek için geliştirdiğimiz makine öğrenmesi modelinin analiz verilerini gösterir...</p>
+    </article>
+
+    <article>
+      <figure><img src="heatmap.png" alt="Isı Haritası"></figure>
+      <h2>Isı Haritası</h2>
+      <p>Bu korelasyon analizi, modelin hangi özelliklerin birlikte değiştiğini anlaması açısından oldukça önemlidir...</p>
+    </article>
+
+    <article>
+      <figure><img src="violinplot.png" alt="Violin Plot"></figure>
+      <h2>Violin Plot Analizi</h2>
+      <p>Bu violin plot, gezegen yarıçapının (Radius (Rearth)) farklı sınıflar arasında nasıl dağıldığını gösterir...</p>
+    </article>
+
+    <article>
+      <figure><img src="boxplot.png" alt="Box Plot"></figure>
+      <h2>Box Plot</h2>
+      <p>Bu boxplot grafikleri, veri setindeki temel parametrelerin dağılımını ve uç değerlerini göstermektedir...</p>
+    </article>
+
+    <a href="index.html" class="back">← Ana Sayfaya Dön</a>
+  </main>
+
+  <!-- SABİT FOOTER -->
+  <footer>
+    <div class="footer-center">
+      © 2025 Lunarispectra Team — All rights reserved.
+    </div>
+    <div class="footer-right">
+      <span>Kaynakça</span>
+      <div class="info-icon" id="infoBtn">?</div>
+      <div class="sources" id="sourcesBox">
+        <p>• NASA Exoplanet Archive — Open Data</p>
+        <p>• Kepler, K2 ve TESS mission verileri</p>
+        <p>• Scikit-Learn, Pandas, Matplotlib analizleri</p>
+        <p>• Görseller: Lunarispectra ML Project</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // 🌟 Rastgele yıldız oluşturucu (istersen geri ekleyebilirim)
+
+    // 🔸 Kaynakça popup
+    const btn = document.getElementById("infoBtn");
+    const box = document.getElementById("sourcesBox");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      box.classList.toggle("visible");
+    });
+    document.addEventListener("click", (e) => {
+      if (!box.contains(e.target) && !btn.contains(e.target)) {
+        box.classList.remove("visible");
+      }
+    });
+  </script>
+</body>
+</html>

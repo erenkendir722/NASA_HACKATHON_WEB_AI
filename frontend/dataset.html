@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExoPortal — Veri Setleri</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: radial-gradient(circle at 20% 20%, #0a1730 0%, #050b1a 100%);
+    color: #fff;
+    overflow-x: hidden;
+  }
+  .starfield {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image:
+      radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+      radial-gradient(1px 1px at 40px 70px, #fff, transparent),
+      radial-gradient(1px 1px at 130px 90px, #fff, transparent),
+      radial-gradient(2px 2px at 200px 150px, #fff, transparent);
+    background-repeat: repeat;
+    animation: twinkle 15s linear infinite;
+    z-index: -2;
+  }
+  @keyframes twinkle {
+    from { background-position: 0 0, 100px 200px, 200px 400px, 300px 100px; }
+    to { background-position: 400px 800px, 200px 400px, 100px 200px, 0 0; }
+  }
+
+  .content {
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 24px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    backdrop-filter: blur(4px);
+  }
+  h1 { text-align: center; font-size: 2rem; }
+  a.dataset {
+    display: block;
+    margin: 20px auto;
+    padding: 16px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+    text-align: center;
+    color: #cfe8ff;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  a.dataset:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.03);
+  }
+
+  .blog-btn {
+    display: block;
+    width: 240px;
+    margin: 40px auto 0;
+    padding: 16px;
+    background: #2e7bef;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  .blog-btn:hover {
+    background: #5294ff;
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body>
+  <div class="starfield"></div>
+
+  <div class="content">
+    <h1>🔭 ExoPlanet Veri Setleri</h1>
+    <p>NASA Exoplanet Archive kaynaklı üç ana veri kümesi:</p>
+
+    <a class="dataset" href="https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=cumulative" target="_blank">Cumulative Exoplanet Catalog</a>
+    <a class="dataset" href="https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=TOI" target="_blank">TESS Object of Interest (TOI)</a>
+    <a class="dataset" href="https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=k2pandc" target="_blank">K2 Planets & Candidates</a>
+
+    <a class="blog-btn" href="blog.html">🪐 Blog & Görseller Sayfasına Git</a>
+
+    <p style="text-align:center;margin-top:40px;"><a href="index.html" style="color:#bbb;">← Ana sayfaya dön</a></p>
+  </div>
+</body>
+</html>
