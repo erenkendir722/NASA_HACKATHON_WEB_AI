@@ -22,7 +22,9 @@ app = Flask(__name__)
 CORS(app)  # Frontend farklı porttaysa gerekli (ör. Live Server 5500)
 
 # =============== Model yükleme ===============
-MODEL_PATH = Path("exoplanet_random_forest_calibrated.pkl")                # pipeline / model
+MODEL_DIR = Path("./models")
+MODEL_DIR.mkdir(parents=True, exist_ok=True)
+MODEL_PATH = MODEL_DIR / f"exoplanet_random_forest_calibrated.pkl"               # pipeline / model
 LABEL_PATH = Path("label_encoder.pkl")        # opsiyonel (LabelEncoder)
 
 if not MODEL_PATH.exists():
